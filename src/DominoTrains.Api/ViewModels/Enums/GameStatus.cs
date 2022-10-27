@@ -1,4 +1,4 @@
-namespace DominoTrains.Api.ViewModels;
+namespace DominoTrains.Api.ViewModels.Enums;
 
 public enum GameStatus
 {

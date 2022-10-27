@@ -1,6 +1,7 @@
 using AutoMapper;
 using DominoTrains.Api.ViewModels;
 using DominoTrains.Application.Services.Commands.CreateNewGame;
+using DominoTrains.Application.Services.Commands.PlayDomino;
 using DominoTrains.Application.Services.Queries.GetGame;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +33,13 @@ public class DominoTrainsController : ControllerBase
     public async Task<ActionResult<GameViewModel>> GetGameAsync(Guid gameId)
     {
         var game = await _sender.Send(new GetGameQuery { GameId = gameId });
+        return _mapper.Map<GameViewModel>(game);
+    }
+
+    [HttpPost("{gameId:guid}/playDomino")]
+    public async Task<ActionResult<GameViewModel>> PlayDominoAsync(Guid gameId, PlayDominoInputModel inputModel)
+    {
+        var game = await _sender.Send(_mapper.Map<PlayDominoCommand>((gameId, inputModel)));
         return _mapper.Map<GameViewModel>(game);
     }
 }

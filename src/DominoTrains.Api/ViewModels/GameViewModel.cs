@@ -1,3 +1,5 @@
+using DominoTrains.Api.ViewModels.Enums;
+
 namespace DominoTrains.Api.ViewModels;
 
 public record GameViewModel

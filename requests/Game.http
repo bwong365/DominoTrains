@@ -2,5 +2,19 @@
 
 # @name createGame
 POST {{baseUrl}}/dominoTrains
+
 ###
+
+# @name getGame
 GET {{baseUrl}}/dominoTrains/{{createGame.response.body.$.id}}
+
+###
+
+# @name playDomino
+POST {{baseUrl}}/dominoTrains/{{getGame.response.body.$.id}}/playDomino
+Content-Type: application/json
+
+{
+  "dominoIndex": 0,
+  "direction": "west"
+}
