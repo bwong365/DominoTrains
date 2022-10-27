@@ -1,0 +1,6 @@
+@baseUrl = https://localhost:7116
+
+# @name createGame
+POST {{baseUrl}}/dominoTrains
+###
+GET {{baseUrl}}/dominoTrains/{{createGame.response.body.$.id}}

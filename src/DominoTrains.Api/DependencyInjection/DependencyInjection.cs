@@ -7,7 +7,11 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApi(this IServiceCollection services)
     {
-        services.AddControllers().AddJsonOptions(opt =>
+        services.AddControllers(opt =>
+        {
+            // Without this, CreatedAtAction fails when referencing Async-Suffixed controller methods
+            opt.SuppressAsyncSuffixInActionNames = false;
+        }).AddJsonOptions(opt =>
         {
             opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
