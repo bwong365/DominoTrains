@@ -50,3 +50,7 @@ static void Startup(string[] args)
     app.MapControllers();
     app.Run();
 }
+
+// Exposing this class allows the application to be started from the integrations test project
+// https://learn.microsoft.com/en-us/aspnet/core/migration/50-to-60-samples?view=aspnetcore-6.0#test-with-webapplicationfactory-or-testserver
+public partial class Program { }
