@@ -60,6 +60,7 @@ public class GameplayTest : IDisposable
 
         Assert.Equal(GameStatus.Complete, game.Status);
         Assert.Null(GetValidMove(game));
+        Assert.Equal(game.Hand.Sum(d => d.A + d.B), game.DotsInHand);
     }
 
     private (int dominoIndex, Direction direction)? GetValidMove(GameViewModel game)
