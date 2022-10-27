@@ -1,3 +1,4 @@
+using DominoTrains.Domain.Exceptions.CustomExceptions;
 using DominoTrains.Domain.ValueObjects;
 
 namespace DominoTrains.Domain.Models;
@@ -12,7 +13,7 @@ public class Train
     {
         if (edgeValue < Domino.MinValue || edgeValue > Domino.MaxValue)
         {
-            throw new ArgumentOutOfRangeException(nameof(edgeValue), $"Value must be within the range of a domino's allowed value ({Domino.MinValue} - {Domino.MaxValue})");
+            throw new GameSetupException($"{nameof(EdgeValue)} must be within the range of allowed values ({Domino.MinValue} - {Domino.MaxValue})");
         }
 
         _dominoes = new List<Domino>();
@@ -35,7 +36,7 @@ public class Train
     {
         if (!CanPlay(domino))
         {
-            throw new InvalidOperationException("One of the domino's sides must match the train's edge");
+            throw new InvalidGamePlayException("One or both sides of the domino must match the edge of the train");
         }
 
         if (domino.A == EdgeValue)

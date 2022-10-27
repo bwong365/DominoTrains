@@ -1,5 +1,6 @@
 using DominoTrains.Application.Interfaces;
 using DominoTrains.Domain.Aggregates;
+using DominoTrains.Domain.Exceptions.CustomExceptions;
 using MediatR;
 
 namespace DominoTrains.Application.Services.Queries.GetGame;
@@ -18,7 +19,7 @@ public class GetGameQueryHandler : IRequestHandler<GetGameQuery, Game?>
         var game = await _gameRepository.GetGameAsync(request.GameId, ct);
         if (game is null)
         {
-            throw new KeyNotFoundException($"Game with id {request.GameId} not found");
+            throw new GameNotFoundException();
         }
 
         return game;

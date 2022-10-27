@@ -1,4 +1,5 @@
 using DominoTrains.Domain.Enums;
+using DominoTrains.Domain.Exceptions.CustomExceptions;
 using DominoTrains.Domain.ValueObjects;
 
 namespace DominoTrains.Domain.Models;
@@ -15,7 +16,7 @@ public class TrainStation
     {
         if (domino.A != domino.B)
         {
-            throw new ArgumentException("Domino must be symmmetrical");
+            throw new GameSetupException("Domino must be symmmetrical");
         }
 
         North = new Train(domino.A);
@@ -36,7 +37,7 @@ public class TrainStation
             Direction.East => East,
             Direction.West => West,
             Direction.South => South,
-            _ => throw new ArgumentOutOfRangeException(nameof(direction), "Invalid direction"),
+            _ => throw new InvalidArgumentException("Invalid direction"),
         };
     }
 }

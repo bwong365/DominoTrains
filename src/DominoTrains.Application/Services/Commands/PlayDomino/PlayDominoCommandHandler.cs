@@ -1,6 +1,7 @@
 using DominoTrains.Application.Interfaces;
 using DominoTrains.Domain.Aggregates;
 using DominoTrains.Domain.Enums;
+using DominoTrains.Domain.Exceptions.CustomExceptions;
 using MediatR;
 
 namespace DominoTrains.Application.Services.Commands.PlayDomino;
@@ -19,7 +20,7 @@ public class PlayDominoCommandHandler : IRequestHandler<PlayDominoCommand, Game>
         var game = await _gameRepository.GetGameAsync(request.GameId, ct);
         if (game is null)
         {
-            throw new ApplicationException($"Game with id {request.GameId} not found");
+            throw new GameNotFoundException();
         }
 
         var train = request.Direction switch
@@ -28,12 +29,12 @@ public class PlayDominoCommandHandler : IRequestHandler<PlayDominoCommand, Game>
             Direction.East => game.TrainStation.East,
             Direction.South => game.TrainStation.South,
             Direction.West => game.TrainStation.West,
-            _ => throw new ArgumentException($"Invalid direction {request.Direction}")
+            _ => throw new InvalidArgumentException($"Invalid direction {request.Direction}")
         };
 
         if (game.IsGameOver())
         {
-            throw new ApplicationException("Game is over");
+            throw new InvalidGamePlayException("Game is over");
         }
 
         game.Player.PlayDomino(request.DominoIndex, train);

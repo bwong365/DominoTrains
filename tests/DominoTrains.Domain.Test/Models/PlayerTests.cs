@@ -1,3 +1,4 @@
+using DominoTrains.Domain.Exceptions.CustomExceptions;
 using DominoTrains.Domain.Models;
 using DominoTrains.Domain.ValueObjects;
 
@@ -59,7 +60,7 @@ public class PlayerTests
 
         var train = new Train(5);
 
-        Assert.Throws<InvalidOperationException>(() => player.PlayDomino(0, train));
+        Assert.Throws<InvalidGamePlayException>(() => player.PlayDomino(0, train));
     }
 
     [Fact]
@@ -69,7 +70,7 @@ public class PlayerTests
 
         var train = new Train(5);
 
-        Assert.Throws<InvalidOperationException>(() => player.PlayDomino(0, train));
+        Assert.Throws<InvalidGamePlayException>(() => player.PlayDomino(0, train));
     }
 
     [Theory]
@@ -84,6 +85,6 @@ public class PlayerTests
 
         var train = new Train(5);
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => player.PlayDomino(index, train));
+        Assert.Throws<InvalidGamePlayException>(() => player.PlayDomino(index, train));
     }
 }

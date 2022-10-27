@@ -1,3 +1,4 @@
+using DominoTrains.Domain.Exceptions.CustomExceptions;
 using DominoTrains.Domain.ValueObjects;
 
 namespace DominoTrains.Domain.Test.ValueObjects;
@@ -24,6 +25,6 @@ public class DominoTests
     {
         var creationAttempt = () => new Domino(a, b);
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => creationAttempt());
+        Assert.Throws<GameSetupException>(() => creationAttempt());
     }
 }

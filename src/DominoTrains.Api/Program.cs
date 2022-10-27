@@ -1,4 +1,5 @@
 using DominoTrains.Api.DependencyInjection;
+using DominoTrains.Api.Middleware;
 using DominoTrains.Application.DependencyInjection;
 using DominoTrains.Infrastructure.DependencyInjection;
 
@@ -16,6 +17,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseGlobalErrorHandlerMiddleware();
 
 app.UseHttpsRedirection();
 

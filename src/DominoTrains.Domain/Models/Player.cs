@@ -1,3 +1,4 @@
+using DominoTrains.Domain.Exceptions.CustomExceptions;
 using DominoTrains.Domain.ValueObjects;
 
 namespace DominoTrains.Domain.Models;
@@ -27,18 +28,18 @@ public class Player
     {
         if (_dominoes.Count == 0)
         {
-            throw new InvalidOperationException("Player has no more dominoes to play");
+            throw new InvalidGamePlayException("Player has no more dominoes to play");
         }
 
         if (index < 0 || index >= _dominoes.Count)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), "Index must be within the range of the player's domino list");
+            throw new InvalidGamePlayException("The player does not have a domino at the specified index");
         }
 
         var domino = _dominoes[index];
         if (!train.CanPlay(domino))
         {
-            throw new InvalidOperationException("One of the domino's sides must match the train's edge");
+            throw new InvalidGamePlayException("One or both sides of the domino must match the edge of the train");
         }
 
         train.AddDomino(domino);

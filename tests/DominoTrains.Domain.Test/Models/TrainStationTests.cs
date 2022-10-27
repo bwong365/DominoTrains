@@ -1,4 +1,5 @@
 using DominoTrains.Domain.Enums;
+using DominoTrains.Domain.Exceptions.CustomExceptions;
 using DominoTrains.Domain.Models;
 using DominoTrains.Domain.ValueObjects;
 
@@ -26,7 +27,7 @@ public class TrainStationTests
         var domino = new Domino(6, 4);
         var creationAttempt = () => new TrainStation(domino);
 
-        Assert.Throws<ArgumentException>(() => creationAttempt());
+        Assert.Throws<GameSetupException>(() => creationAttempt());
     }
 
     [Theory]

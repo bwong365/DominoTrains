@@ -1,3 +1,4 @@
+using DominoTrains.Domain.Exceptions.CustomExceptions;
 using DominoTrains.Domain.Models;
 using DominoTrains.Domain.ValueObjects;
 
@@ -13,12 +14,12 @@ public class Game
     {
         if (dominoList.Count < 1)
         {
-            throw new ArgumentOutOfRangeException("There must be at least one domino to play with");
+            throw new GameSetupException("There must be at least one domino to play with");
         }
 
         if (handSize > dominoList.Count || handSize <= 0)
         {
-            throw new ArgumentOutOfRangeException("Hand size must be greater than 0 and less than the number of dominoes");
+            throw new GameSetupException("Hand size must be greater than 0 and less than the number of dominoes");
         }
 
         var trainStation = new TrainStation(startingDomino);

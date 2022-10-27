@@ -1,4 +1,5 @@
 using DominoTrains.Domain.Aggregates;
+using DominoTrains.Domain.Exceptions.CustomExceptions;
 using DominoTrains.Domain.ValueObjects;
 
 namespace DominoTrains.Domain.Test.Models;
@@ -36,7 +37,7 @@ public class GameTests
 
         var creationAttempt = () => Game.NewGame(dominoList, _startingDomino, _handSize);
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => creationAttempt());
+        Assert.Throws<GameSetupException>(() => creationAttempt());
     }
 
     [Theory]
@@ -46,7 +47,7 @@ public class GameTests
     {
         var creationAttempt = () => Game.NewGame(_dominoList, _startingDomino, handSize);
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => creationAttempt());
+        Assert.Throws<GameSetupException>(() => creationAttempt());
     }
 
     [Fact]

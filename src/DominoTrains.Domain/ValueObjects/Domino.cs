@@ -1,3 +1,5 @@
+using DominoTrains.Domain.Exceptions.CustomExceptions;
+
 namespace DominoTrains.Domain.ValueObjects;
 
 public record Domino
@@ -12,12 +14,12 @@ public record Domino
     {
         if (a < MinValue || a > MaxValue)
         {
-            throw new ArgumentOutOfRangeException(nameof(a), $"Value must be between {MinValue} and {MaxValue}");
+            throw new GameSetupException($"Domino value must be between {MinValue} and {MaxValue}");
         }
 
         if (b < MinValue || b > MaxValue)
         {
-            throw new ArgumentOutOfRangeException(nameof(b), $"Value must be between {MinValue} and {MaxValue}");
+            throw new GameSetupException($"Domino value must be between {MinValue} and {MaxValue}");
         }
 
         A = a;

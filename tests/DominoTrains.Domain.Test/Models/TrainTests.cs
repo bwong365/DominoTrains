@@ -1,3 +1,4 @@
+using DominoTrains.Domain.Exceptions.CustomExceptions;
 using DominoTrains.Domain.Models;
 using DominoTrains.Domain.ValueObjects;
 
@@ -23,7 +24,7 @@ public class TrainTests
     {
         var creationAttempt = () => new Train(initialEdgeValue);
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => creationAttempt());
+        Assert.Throws<GameSetupException>(() => creationAttempt());
     }
 
     [Fact]
@@ -58,6 +59,6 @@ public class TrainTests
 
         var addAttempt = () => train.AddDomino(domino);
 
-        Assert.Throws<InvalidOperationException>(() => addAttempt());
+        Assert.Throws<InvalidGamePlayException>(() => addAttempt());
     }
 }
