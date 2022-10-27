@@ -2,6 +2,9 @@ using System.Net;
 using System.Text.Json;
 using DominoTrains.Domain.Exceptions.BaseExceptions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using FluentValidation;
+using DominoTrains.Api.Utils;
 
 namespace DominoTrains.Api.Middleware;
 
@@ -30,23 +33,30 @@ public class GlobalErrorHandlerMiddleware
     {
         var (statusCode, title) = exception switch
         {
+            ValidationException => (HttpStatusCode.BadRequest, "One or more validation errors occurred."),
             ViolationException => (HttpStatusCode.BadRequest, "An incorrect action was taken."),
             NotFoundException => (HttpStatusCode.NotFound, "The requested resource was not found."),
             UnexpectedException or _ => (HttpStatusCode.InternalServerError, "Something went wrong."),
         };
 
-        var problemDetails = new ProblemDetails
+        var result = exception switch
         {
-            Title = title,
-            Status = (int)statusCode,
-            Detail = exception.Message,
-            Instance = context.Request.Path
+            ValidationException validationException => JsonSerializer.Serialize<ValidationProblemDetails>(GetValidationProblemDetails(validationException)),
+            _ => JsonSerializer.Serialize<ProblemDetails>(new ProblemDetails { Title = title, Status = (int)statusCode, Detail = exception.Message, Instance = context.Request.Path })
         };
-
-        var result = JsonSerializer.Serialize(problemDetails);
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)statusCode;
         await context.Response.WriteAsync(result);
+    }
+
+    private ValidationProblemDetails GetValidationProblemDetails(ValidationException exception)
+    {
+        var modelState = new ModelStateDictionary();
+        foreach (var error in exception.Errors)
+        {
+            modelState.AddModelError(error.PropertyName.FromPascalToCamelCase(), error.ErrorMessage);
+        }
+        return new ValidationProblemDetails(modelState);
     }
 }
 
