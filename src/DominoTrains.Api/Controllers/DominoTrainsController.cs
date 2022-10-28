@@ -21,6 +21,9 @@ public class DominoTrainsController : ControllerBase
         _mapper = mapper;
     }
 
+    /// <summary>
+    /// Creates a new game of DominoTrains
+    /// </summary>
     [HttpPost]
     public async Task<ActionResult<GameViewModel>> CreateGameAsync()
     {
@@ -29,6 +32,9 @@ public class DominoTrainsController : ControllerBase
         return CreatedAtAction(nameof(GetGameAsync), new { gameId = game.Id }, gameViewModel);
     }
 
+    /// <summary>
+    /// Gets an existing game
+    /// </summary>
     [HttpGet("{gameId:guid}")]
     public async Task<ActionResult<GameViewModel>> GetGameAsync(Guid gameId)
     {
@@ -36,6 +42,9 @@ public class DominoTrainsController : ControllerBase
         return _mapper.Map<GameViewModel>(game);
     }
 
+    /// <summary>
+    /// Plays a domino from the player's hand
+    /// </summary>
     [HttpPost("{gameId:guid}/playDomino")]
     public async Task<ActionResult<GameViewModel>> PlayDominoAsync(Guid gameId, PlayDominoInputModel inputModel)
     {

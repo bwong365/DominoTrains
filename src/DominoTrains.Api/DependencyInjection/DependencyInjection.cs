@@ -16,7 +16,12 @@ public static class DependencyInjection
             opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(opt =>
+        {
+            var xmlCommentsFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFileName);
+            opt.IncludeXmlComments(xmlCommentsFullPath);
+        });
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
         return services;
