@@ -17,7 +17,7 @@ public class GlobalErrorHandlerMiddleware
         _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context, ILogger<GlobalErrorHandlerMiddleware> logger)
     {
         try
         {
@@ -25,11 +25,11 @@ public class GlobalErrorHandlerMiddleware
         }
         catch (Exception ex)
         {
-            await HandleExceptionAsync(context, ex);
+            await HandleExceptionAsync(context, ex, logger);
         }
     }
 
-    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private async Task HandleExceptionAsync(HttpContext context, Exception exception, ILogger<GlobalErrorHandlerMiddleware> logger)
     {
         var (statusCode, title) = exception switch
         {
@@ -39,11 +39,17 @@ public class GlobalErrorHandlerMiddleware
             UnexpectedException or _ => (HttpStatusCode.InternalServerError, "Something went wrong."),
         };
 
+        if (statusCode == HttpStatusCode.InternalServerError)
+        {
+            logger.LogError("Message: {Message}, StackTrace: {@StackTrace}", exception.Message, exception.StackTrace);
+        }
+
         var result = exception switch
         {
             ValidationException validationException => JsonSerializer.Serialize<ValidationProblemDetails>(GetValidationProblemDetails(validationException)),
             _ => JsonSerializer.Serialize<ProblemDetails>(new ProblemDetails { Title = title, Status = (int)statusCode, Detail = exception.Message, Instance = context.Request.Path })
         };
+
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)statusCode;
         await context.Response.WriteAsync(result);

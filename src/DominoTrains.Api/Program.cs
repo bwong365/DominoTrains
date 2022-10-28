@@ -2,28 +2,51 @@ using DominoTrains.Api.DependencyInjection;
 using DominoTrains.Api.Middleware;
 using DominoTrains.Application.DependencyInjection;
 using DominoTrains.Infrastructure.DependencyInjection;
+using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
-builder.Services
-    .AddApi()
-    .AddInfrastructure(builder.Configuration)
-    .AddApplication();
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("startup.txt")
+    .CreateBootstrapLogger();
 
-var app = builder.Build();
+Log.Information("Starting up");
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Ensure that startup issues are logged
+try
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    Startup(args);
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Unhandled exception");
+}
+finally
+{
+    Log.Information("Shut down complete");
+    Log.CloseAndFlush();
 }
 
-app.UseGlobalErrorHandlerMiddleware();
+static void Startup(string[] args)
+{
+    var builder = WebApplication.CreateBuilder(args);
+    builder.Host.UseSerilog((ctx, config) => config
+        .ReadFrom.Configuration(ctx.Configuration));
 
-app.UseHttpsRedirection();
+    builder.Services
+        .AddApi()
+        .AddInfrastructure(builder.Configuration)
+        .AddApplication();
 
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+    var app = builder.Build();
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+    app.UseSerilogRequestLogging();
+    app.UseGlobalErrorHandlerMiddleware();
+    app.UseHttpsRedirection();
+    app.UseAuthorization();
+    app.MapControllers();
+    app.Run();
+}
