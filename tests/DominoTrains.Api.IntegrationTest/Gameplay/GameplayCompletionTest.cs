@@ -66,11 +66,11 @@ public class GameplayTest : IDisposable
     private (int dominoIndex, Direction direction)? GetValidMove(GameViewModel game)
     {
         var dominoesWithIndex = game.Hand.Select((domino, index) => (domino, index)).ToList();
-        foreach (var direction in Enum.GetValues<Direction>())
+        foreach (var (domino, index) in dominoesWithIndex)
         {
-            var train = game.TrainStation.GetType().GetProperty(direction.ToString())?.GetValue(game.TrainStation) as TrainViewModel;
-            foreach (var (domino, index) in dominoesWithIndex)
+            foreach (var direction in Enum.GetValues<Direction>())
             {
+                var train = game.TrainStation.GetType().GetProperty(direction.ToString())?.GetValue(game.TrainStation) as TrainViewModel;
                 if (train?.EdgeValue == domino.A || train?.EdgeValue == domino.B)
                 {
                     return (index, direction);
