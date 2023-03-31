@@ -1,8 +1,7 @@
 using AutoFixture;
 using AutoFixture.Xunit2;
 
-namespace DominoTrains.Api.Test.Mapping.TestUtils.AutoFixtureCustomization;
-
+namespace DominoTrains.Api.Test.TestUtils.AutoFixtureCustomization;
 public sealed class CustomAutoDataAttribute : AutoDataAttribute
 {
     public CustomAutoDataAttribute() : base(CreateFixture)

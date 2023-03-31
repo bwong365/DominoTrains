@@ -1,6 +1,6 @@
 using AutoMapper;
 using DominoTrains.Api.Mapping;
-using DominoTrains.Api.Test.Mapping.TestUtils.AutoFixtureCustomization;
+using DominoTrains.Api.Test.TestUtils.AutoFixtureCustomization;
 using DominoTrains.Api.ViewModels;
 using DominoTrains.Api.ViewModels.Enums;
 using DominoTrains.Application.Services.Commands.PlayDomino;
