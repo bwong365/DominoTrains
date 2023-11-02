@@ -2,21 +2,21 @@ using DominoTrains.Application.Interfaces;
 using DominoTrains.Application.Services.Commands.CreateNewGame;
 using DominoTrains.Domain.Aggregates;
 using DominoTrains.Domain.ValueObjects;
-using Moq;
+using NSubstitute;
 
 namespace DominoTrains.Application.Test.Services.CreateNewGame;
 
 public class CreateNewGameCommandHandlerTests
 {
-    private readonly Mock<IDominoesFactory> _mockDominoesFactory;
-    private readonly Mock<IGameRepository> _mockGameRepository;
+    private readonly IDominoesFactory _mockDominoesFactory;
+    private readonly IGameRepository _mockGameRepository;
     private readonly CreateNewGameCommandHandler _sut;
 
     public CreateNewGameCommandHandlerTests()
     {
-        _mockDominoesFactory = new Mock<IDominoesFactory>();
-        _mockGameRepository = new Mock<IGameRepository>();
-        _sut = new CreateNewGameCommandHandler(_mockDominoesFactory.Object, _mockGameRepository.Object);
+        _mockDominoesFactory = Substitute.For<IDominoesFactory>();
+        _mockGameRepository = Substitute.For<IGameRepository>();
+        _sut = new CreateNewGameCommandHandler(_mockDominoesFactory, _mockGameRepository);
     }
 
     [Fact]
@@ -29,12 +29,8 @@ public class CreateNewGameCommandHandlerTests
         };
         Game? persistedGame = null;
 
-        _mockDominoesFactory.Setup(x => x.CreateDominoes()).Returns(dominoes);
-        _mockGameRepository
-            .Setup(x => x.AddGameAsync(It.IsAny<Game>(), It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask)
-            .Callback<Game, CancellationToken?>((game, _) => persistedGame = game);
-
+        _mockDominoesFactory.CreateDominoes().Returns(dominoes);
+        _mockGameRepository.AddGameAsync(Arg.Any<Game>(), Arg.Any<CancellationToken>()).Returns(Task.CompletedTask).AndDoes(x => persistedGame = x.Arg<Game>());
         var result = await _sut.Handle(new CreateNewGameCommand(), CancellationToken.None);
 
         Assert.Equal(result, persistedGame);
